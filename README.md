@@ -2,7 +2,7 @@
 
 Name: Leon Jardine
 
-Title: Forbidden Rhythms, Tempo 2(00)
+Title: Forbidden Rhythms, Tempo 2(00 BPM)
 
 Course: CGAD
 
