@@ -50,10 +50,17 @@ Level::Level(sf::RenderWindow* hwnd, Input* in, GameState* gs, AudioManager* aud
 	// setup player component.
 	playerPosition = { start.x, start.y };
 	player.setPosition(sf::Vector2f(
-		gridBoard.getPosition().x + cellDim * start.x,
+		gridBoard.getPosition().x + cellDim  * start.x,
 		gridBoard.getPosition().y + cellDim * start.y)
 	);
 	player.setSize(sf::Vector2f(cellDim, cellDim));
+
+	sidekickPosition = { sidekickstart.x, sidekickstart.y };
+	sidekick.setPosition(sf::Vector2f(
+		gridBoard.getPosition().x + cellDim  * sidekickstart.x,
+		gridBoard.getPosition().y + cellDim * sidekickstart.y)
+	);
+	sidekick.setSize(sf::Vector2f(cellDim , cellDim));
 
 	// Setup progress bar component.
 	progressInStep.setPosition(sf::Vector2f(900, 800));
@@ -159,6 +166,26 @@ void Level::handleInput(float dt)
 		{
 			selectedAction = DOWN;
 		}
+
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+		{
+			selectedAction = ARROW_LEFT;
+			sidekick.setFlipped(true);
+		}
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+		{
+			selectedAction = ARROW_UP;
+		}
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+		{
+			selectedAction = ARROW_RIGHT;
+			sidekick.setFlipped(false);
+
+		}
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+		{
+			selectedAction = ARROW_DOWN;
+		}
 		alert.setString("");
 	}
 	else 
@@ -178,6 +205,24 @@ void Level::handleInput(float dt)
 			selectedAction = FAIL;
 		}
 		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+		{
+			selectedAction = FAIL;
+		}
+
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+		{
+			selectedAction = FAIL;
+		}
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+		{
+			selectedAction = FAIL;
+		}
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+		{
+			selectedAction = FAIL;
+
+		}
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
 		{
 			selectedAction = FAIL;
 		}
@@ -222,8 +267,36 @@ void Level::update(float dt)
 		alertHasBeenActiveFor = 0.f;
 	}
 
+	if (playerPosition == sidekickPosition)
+	{
+		sidekickPosition.first++;
+	}
+
+//check for player speed boost
+	if (playerPosition.first + 1 == sidekickPosition.first and playerPosition.second == sidekickPosition.second)
+	{
+		TIME_PER_STEP = 0.75;
+	}
+	else if (playerPosition.first - 1 == sidekickPosition.first and playerPosition.second == sidekickPosition.second)
+	{
+		TIME_PER_STEP = 0.75;
+	}
+	else if (playerPosition.second + 1 == sidekickPosition.second and playerPosition.first == sidekickPosition.first)
+	{
+		TIME_PER_STEP = 0.75;
+	}
+	else if (playerPosition.second - 1 == sidekickPosition.second and playerPosition.first == sidekickPosition.first)
+	{
+		TIME_PER_STEP = 0.75;
+	}
+	else
+	{
+		TIME_PER_STEP = 1;
+	}
+
 	// update references. NOTE: gridboard only updated sometimes (enemies move each step, not each frame).
 	player.update(dt);
+	sidekick.update(dt);
 	lecturer.update(dt);
 
 	// Play beat ONCE per step.
@@ -259,6 +332,21 @@ void Level::update(float dt)
 	case NONE:
 		controls[0].setString("none");
 		break;
+	case ARROW_UP:
+		controls[0].setString("up");
+		indicators[0].setFillColor(sf::Color::Yellow);
+		break;
+	case ARROW_RIGHT:
+		controls[0].setString("right");
+		indicators[1].setFillColor(sf::Color::Yellow);
+		break;
+	case ARROW_DOWN:
+		controls[0].setString("down");
+		indicators[2].setFillColor(sf::Color::Yellow);
+		break;
+	case ARROW_LEFT:
+		controls[0].setString("left");
+		indicators[3].setFillColor(sf::Color::Yellow);
 	}
 
 	// update progress component
@@ -320,14 +408,50 @@ void Level::update(float dt)
 			}
 			playerPosition.first--;
 			break;
+		case ARROW_UP:
+			if (sidekickPosition.second == 0)
+			{
+				resetSidekick();
+				break;
+			}
+			sidekickPosition.second--;	// positive-y innit.
+			break;
+		case ARROW_RIGHT:
+			if (sidekickPosition.first == boardDimensions.x - 1)
+			{
+				resetSidekick();
+				break;
+			}
+			sidekickPosition.first++;
+			sidekick.setFlipped(false);
+			break;
+		case ARROW_DOWN:
+			if (sidekickPosition.second == boardDimensions.y - 1)
+			{
+				resetSidekick();
+				break;
+			}
+			sidekickPosition.second++;
+			break;
+		case ARROW_LEFT:
+			if (sidekickPosition.first == 0)
+			{
+				resetSidekick();
+				break;
+			}
+			sidekickPosition.first--;
+			break;
 		}
-		player.setPosition(sf::Vector2f(
-			gridBoard.getPosition().x + cellDim * playerPosition.first,
-			gridBoard.getPosition().y + cellDim * playerPosition.second)
-		);
+		player.setPosition(sf::Vector2f(gridBoard.getPosition().x + cellDim * playerPosition.first, gridBoard.getPosition().y + cellDim * playerPosition.second));
+		sidekick.setPosition(sf::Vector2f(gridBoard.getPosition().x + cellDim * sidekickPosition.first,gridBoard.getPosition().y + cellDim * sidekickPosition.second));
+
 		if (grid.playerHit(playerPosition))
 		{
 			resetPlayer();
+		}
+		if (grid.playerHit(sidekickPosition))
+		{
+			resetSidekick();
 		}
 		selectedAction = NONE;
 
@@ -356,7 +480,9 @@ void Level::render()
 	window->draw(levelBG);
 	grid.render(window, checkPointEnabled);
 	window->draw(controls[0]);
+
 	window->draw(player);
+	window->draw(sidekick);
 	window->draw(progressInStepBG);
 	window->draw(targetZone);
 	window->draw(progressInStep);
@@ -387,6 +513,13 @@ void Level::resetPlayer()
 	damagedTimer = RESET_TIME;
 	player.setDamaged(damagedTimer);
 	deaths++;
+}
+void Level::resetSidekick()
+{
+	sidekickPosition = { sidekickstart.x, sidekickstart.y };
+	audio->playSoundbyName("death");
+	damagedTimer = RESET_TIME;
+	sidekick.setDamaged(damagedTimer);
 }
 
 void Level::reset()

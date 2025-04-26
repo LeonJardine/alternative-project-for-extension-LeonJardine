@@ -7,6 +7,7 @@
 #include "StageGrid.h"
 #include "Player.h"
 #include "Lecturer.h"
+#include "Sidekick.h"
 
 class Level : BaseLevel{
 public:
@@ -19,11 +20,13 @@ public:
 	void reset();
 	void resetPlayer();
 
+	void resetSidekick();
+
 private:
 
 	// constant declarations
 	const float GRID_Y_MAX_PROPORTION = 0.6f;	// how wide, as a proportion of the window, can the grid be
-	const float TIME_PER_STEP = 1.0f;	// time for each step (time between claps)
+	float TIME_PER_STEP = 1.0f;	// time for each step (time between claps)
 	const float TIME_FOR_ACTION = 0.25f;	// how long (seconds) does the player have to act
 	const float TIME_BUFFER = 0.25f;	// time between end of action window and end of step.
 	const float RESET_TIME = 1.0f;		// time for 'reset' state where player cannot move.
@@ -31,6 +34,10 @@ private:
 
 	// possible actions chosen.
 	enum actions {
+		ARROW_UP,
+		ARROW_DOWN,
+		ARROW_LEFT,
+		ARROW_RIGHT,
 		UP,
 		DOWN,
 		LEFT,
@@ -42,6 +49,7 @@ private:
 	TextureManager* textMan;
 	GameObject gridBoard;
 	Player player;
+	Sidekick sidekick;
 	GameObject target;
 	GameObject moveSelected;
 	GameObject progressInStep;
@@ -50,6 +58,7 @@ private:
 	GameObject levelBG;
 	GameObject controlBG;
 	std::pair<int, int> playerPosition;
+	std::pair<int, int> sidekickPosition;
 	actions selectedAction;
 	std::vector<GameObject> indicators;
 	sf::Font font;
@@ -59,6 +68,7 @@ private:
 	Lecturer lecturer;
 	sf::Vector2i start = { 0,3 };
 	sf::Vector2i end = { 0, 8 };
+	sf::Vector2i sidekickstart = { 18,0 };
 	sf::Vector2i checkPoint = { 19, 5 };
 	sf::Vector2i boardDimensions{ 20,10 };
 	bool checkPointEnabled;
