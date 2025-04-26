@@ -27,8 +27,8 @@ TitleScreen::TitleScreen(sf::RenderWindow* hwnd, Input* in, GameState* gs, Audio
 	titleText.setCharacterSize(60);
 	singleRunText.setFont(montsFont);
 	singleRunText.setCharacterSize(40);
-	singleRunText.setPosition(window->getSize().x * 0.1, window->getSize().y * 0.8);
-	singleRunText.setString("Press 1 to practice LECTURER.\nPress 2 to practice RUNNER.\nPress 3 to practice WIZARD.");
+	singleRunText.setPosition(window->getSize().x * 0.1, window->getSize().y * 0.7);
+	singleRunText.setString("Press 1 to practice LECTURER.\nPress 2 to practice RUNNER.\nPress 3 to practice WIZARD.\nPress 4 to practice SURFER");
 
 
 	// .. background
@@ -66,7 +66,11 @@ void TitleScreen::handleInput(float dt)
 		gameState->setCurrentState(State::PRE_THREE);
 		gameState->setSingleRun(true);
 	}
-
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num4))
+	{
+		gameState->setCurrentState(State::PRE_FOUR);
+		gameState->setSingleRun(true);
+	}
 }
 
 void TitleScreen::update(float dt)

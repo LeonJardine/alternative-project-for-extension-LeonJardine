@@ -241,8 +241,14 @@ void WizardLevel::update(float dt)
 		gameState->addResult("l3deaths", deaths);
 		gameState->addResult("l3success", float(beatsPlayed - misses) / float(beatsPlayed));
 		gameState->addResult("l3time", timeTaken);
-		if (gameState->getSingleRun()) gameState->setCurrentState(State::ENDGAME);
-		else gameState->setCurrentState(State::ENDGAME);
+		if (gameState->getSingleRun())
+		{
+			gameState->setCurrentState(State::ENDGAME);
+		}
+		else
+		{
+			gameState->setCurrentState(State::PRE_FOUR);
+		}
 		audio->playSoundbyName("success");
 	}
 	else

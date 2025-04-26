@@ -254,6 +254,7 @@
     <ClCompile Include="RunnerLevel.cpp" />
     <ClCompile Include="Sidekick.cpp" />
     <ClCompile Include="StageGrid.cpp" />
+    <ClCompile Include="SurferLevel.cpp" />
     <ClCompile Include="TextureManager.cpp" />
     <ClCompile Include="TitleScreen.cpp" />
     <ClCompile Include="TransitionLevel.cpp" />
@@ -283,6 +284,7 @@
     <ClInclude Include="RunnerLevel.h" />
     <ClInclude Include="Sidekick.h" />
     <ClInclude Include="StageGrid.h" />
+    <ClInclude Include="SurferLevel.h" />
     <ClInclude Include="TextureManager.h" />
     <ClInclude Include="TitleScreen.h" />
     <ClInclude Include="TransitionLevel.h" />

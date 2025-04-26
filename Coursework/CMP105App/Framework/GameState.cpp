@@ -21,6 +21,8 @@ void GameState::addResult(std::string attr, float v)
 	if (attr == "l2deaths") results->L2Deaths = int(v);
 	if (attr == "l3time") results->L3Time = v;
 	if (attr == "l3deaths") results->L3Deaths = int(v);
+	if (attr == "l4time") results->L4Time = v;
+	if (attr == "l4deaths") results->L4Deaths = int(v);
 }
 
 runResults* GameState::getResults()

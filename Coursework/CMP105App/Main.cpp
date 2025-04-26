@@ -10,6 +10,7 @@
 #include "TransitionLevel.h"
 #include "RunnerLevel.h"
 #include "WizardLevel.h"
+#include "SurferLevel.h"
 #include "TextureManager.h"
 #include "Framework/AudioManager.h"
 #include "Framework/GameState.h"
@@ -86,7 +87,7 @@ int main()
 	WizardLevel wizardLevel(&window, &input, &gameState, &audioManager, textureManager, 2);
 	TransitionLevel transLevel(&window, &input, &gameState, &audioManager, textureManager);
 	RunnerLevel runnerLevel(&window, &input, &gameState, &audioManager, textureManager);
-
+	SurferLevel surferLevel(&window, &input, &gameState, &audioManager, textureManager);
 	// begin on the title screen
 	gameState.setCurrentState(State::TITLE);
 
@@ -130,10 +131,15 @@ int main()
 			wizardLevel.handleInput(deltaTime);
 			wizardLevel.update(deltaTime);
 			wizardLevel.render();
+		case State::SURFER:
+			surferLevel.handleInput(deltaTime);
+			surferLevel.update(deltaTime);
+			surferLevel.render();
 			break;
 		case State::PRE_ONE:
 		case State::PRE_TWO:
 		case State::PRE_THREE:
+		case State::PRE_FOUR:
 		case State::ENDGAME:
 			// All four of these states are captured in the transition level
 			transLevel.handleInput(deltaTime);
@@ -145,6 +151,7 @@ int main()
 			motivationLevel.reset();
 			runnerLevel.reset();
 			wizardLevel.reset();
+			surferLevel.reset();
 			// crank the music
 			audioManager.playMusicbyName("digitalLove");
 			gameState = GameState();

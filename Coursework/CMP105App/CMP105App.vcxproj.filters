@@ -90,6 +90,9 @@
     <ClCompile Include="Sidekick.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="SurferLevel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="README.txt">
@@ -167,6 +170,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Sidekick.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SurferLevel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
