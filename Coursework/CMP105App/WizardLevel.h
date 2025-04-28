@@ -54,8 +54,10 @@ private:
 	sf::Vector2i start = { 0,0 };
 	sf::Vector2i end = { 19, 9 };
 	sf::Vector2i checkPoint{ 10, 4 };
+	sf::Vector2i manMadeCheckPoint{ 19, 0 };
 	sf::Vector2i boardDimensions{ 20,10 };
 	bool checkPointEnabled = false;
+	bool manMadeEnabled = false;
 	bool stepFailed = false;
 	std::vector<char> currentControls = { 'W', 'A', 'S', 'D' };
 

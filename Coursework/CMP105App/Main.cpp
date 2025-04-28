@@ -131,6 +131,7 @@ int main()
 			wizardLevel.handleInput(deltaTime);
 			wizardLevel.update(deltaTime);
 			wizardLevel.render();
+			break;
 		case State::SURFER:
 			surferLevel.handleInput(deltaTime);
 			surferLevel.update(deltaTime);

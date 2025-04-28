@@ -91,6 +91,7 @@ WizardLevel::WizardLevel(sf::RenderWindow* hwnd, Input* in, GameState* gs, Audio
 		start,
 		end,
 		checkPoint,
+		manMadeCheckPoint,
 		2,
 		textMan
 	);
@@ -231,6 +232,11 @@ void WizardLevel::handleInput(float dt)
 			stepFailed = true;
 		}
 	}
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+	{
+		manMadeCheckPoint = { playerPosition.first, playerPosition.second };
+	}
 }
 
 void WizardLevel::update(float dt)
@@ -266,12 +272,18 @@ void WizardLevel::update(float dt)
 		lastControlChange = timeTaken;
 	}
 
-	// check for checkpoint
-	if (!checkPointEnabled && playerPosition.first >= checkPoint.x)
+	if (!checkPointEnabled && playerPosition.second == checkPoint.y && playerPosition.first == checkPoint.x)
 	{
 		checkPointEnabled = true;
+		manMadeEnabled = false;
+		audio->playSoundbyName("success");
 	}
-
+	else if (!manMadeEnabled && playerPosition.second == manMadeCheckPoint.y && playerPosition.first == manMadeCheckPoint.x)
+	{
+		checkPointEnabled = false;
+		manMadeEnabled = true;
+		audio->playSoundbyName("success");
+	}
 
 	// Play beat ONCE per step.
 	if (!soundPlayed && timeInStep > TIME_PER_STEP - (TIME_FOR_ACTION / 2 + TIME_BUFFER))
@@ -394,7 +406,7 @@ void WizardLevel::render()
 	beginDraw();
 	window->draw(levelBG);
 	window->draw(controlBG);
-	grid.render(window, checkPointEnabled);
+	grid.render(window, checkPointEnabled,manMadeEnabled);
 	window->draw(controls[0]);
 	window->draw(player);
 	window->draw(progressInStepBG);
@@ -513,11 +525,13 @@ void WizardLevel::reset()
 		start,
 		end,
 		checkPoint,
+		manMadeCheckPoint,
 		2,
 		textMan
 	);
 
 	checkPointEnabled = false;
+	manMadeEnabled = false;
 }
 
 /*
@@ -526,6 +540,7 @@ Put player back to the starting space.
 void WizardLevel::resetPlayer()
 {
 	if (checkPointEnabled) playerPosition = { checkPoint.x, checkPoint.y };
+	else if (manMadeEnabled) playerPosition = { manMadeCheckPoint.x , manMadeCheckPoint.y };
 	else playerPosition = { start.x, start.y };
 	audio->playSoundbyName("death");
 	damagedTimer = RESET_TIME;

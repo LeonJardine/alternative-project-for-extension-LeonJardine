@@ -96,6 +96,7 @@ Level::Level(sf::RenderWindow* hwnd, Input* in, GameState* gs, AudioManager* aud
 		start, 
 		end, 
 		checkPoint,
+		manMadeCheckPoint,
 		1,	
 		textMan
 	);
@@ -119,6 +120,7 @@ Level::Level(sf::RenderWindow* hwnd, Input* in, GameState* gs, AudioManager* aud
 
 	// set state.
 	checkPointEnabled = false;
+	manMadeEnabled = false;
 
 	// set alert
 	alert.setFont(font);
@@ -228,6 +230,10 @@ void Level::handleInput(float dt)
 		}
 		
 	}
+	if(sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+	{
+		manMadeCheckPoint = { playerPosition.first, playerPosition.second };
+	}
 }
 
 // Update game objects
@@ -259,18 +265,24 @@ void Level::update(float dt)
 	}
 
 	// check for checkpoint
-	if (!checkPointEnabled && playerPosition.second > checkPoint.y)
+	if (!checkPointEnabled && playerPosition.second == checkPoint.y && playerPosition.first == checkPoint.x)
 	{
 		checkPointEnabled = true;
+		manMadeEnabled = false;
+		audio->playSoundbyName("success");
+		alert.setString("checkpoint");
+		alertHasBeenActiveFor = 0.f;
+	}
+	else if (!manMadeEnabled && playerPosition.second == manMadeCheckPoint.y && playerPosition.first == manMadeCheckPoint.x)
+	{
+		checkPointEnabled = false;
+		manMadeEnabled = true;
 		audio->playSoundbyName("success");
 		alert.setString("checkpoint");
 		alertHasBeenActiveFor = 0.f;
 	}
 
-	if (playerPosition == sidekickPosition)
-	{
-		sidekickPosition.first++;
-	}
+	
 
 //check for player speed boost
 	if (playerPosition.first + 1 == sidekickPosition.first and playerPosition.second == sidekickPosition.second)
@@ -288,10 +300,6 @@ void Level::update(float dt)
 	else if (playerPosition.second - 1 == sidekickPosition.second and playerPosition.first == sidekickPosition.first)
 	{
 		TIME_PER_STEP = 0.75;
-	}
-	else
-	{
-		TIME_PER_STEP = 1;
 	}
 
 	// update references. NOTE: gridboard only updated sometimes (enemies move each step, not each frame).
@@ -478,9 +486,8 @@ void Level::render()
 {
 	beginDraw();
 	window->draw(levelBG);
-	grid.render(window, checkPointEnabled);
+	grid.render(window, checkPointEnabled, manMadeEnabled);
 	window->draw(controls[0]);
-
 	window->draw(player);
 	window->draw(sidekick);
 	window->draw(progressInStepBG);
@@ -507,7 +514,8 @@ Put player back to the starting space.
 */
 void Level::resetPlayer()
 {
-	if(checkPointEnabled) playerPosition = { checkPoint.x, checkPoint.y };
+	if (checkPointEnabled) playerPosition = { checkPoint.x, checkPoint.y };
+	else if (manMadeEnabled) playerPosition = { manMadeCheckPoint.x, manMadeCheckPoint.y };
 	else playerPosition = { start.x, start.y };
 	audio->playSoundbyName("death");
 	damagedTimer = RESET_TIME;
@@ -579,6 +587,12 @@ void Level::reset()
 	);
 	player.setSize(sf::Vector2f(cellDim, cellDim));
 
+	sidekick.setPosition(sf::Vector2f(
+		gridBoard.getPosition().x + cellDim * sidekickstart.x,
+		gridBoard.getPosition().y + cellDim * sidekickstart.y)
+	);
+	sidekick.setSize(sf::Vector2f(cellDim, cellDim));
+
 	// Setup progress bar component.
 	progressInStep.setPosition(sf::Vector2f(900, 800));
 	progressInStep.setSize(sf::Vector2f(0, 200));
@@ -603,6 +617,7 @@ void Level::reset()
 		start,
 		end,
 		checkPoint,
+		manMadeCheckPoint,
 		1,
 		textMan
 	);

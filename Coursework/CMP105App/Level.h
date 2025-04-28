@@ -70,8 +70,10 @@ private:
 	sf::Vector2i end = { 0, 8 };
 	sf::Vector2i sidekickstart = { 18,0 };
 	sf::Vector2i checkPoint = { 19, 5 };
+	sf::Vector2i manMadeCheckPoint = { 19, 9 };
 	sf::Vector2i boardDimensions{ 20,10 };
 	bool checkPointEnabled;
+	bool manMadeEnabled;
 	float timeInStep = 0.f;
 	bool soundPlayed = false;
 	float cellDim;
