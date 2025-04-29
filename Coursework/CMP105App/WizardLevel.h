@@ -58,6 +58,8 @@ private:
 	sf::Vector2i boardDimensions{ 20,10 };
 	bool checkPointEnabled = false;
 	bool manMadeEnabled = false;
+	bool easyMode;
+	bool hardMode;
 	bool stepFailed = false;
 	std::vector<char> currentControls = { 'W', 'A', 'S', 'D' };
 

@@ -8,6 +8,8 @@
 #include "Player.h"
 #include "Lecturer.h"
 #include "Sidekick.h"
+#include "TitleScreen.h"
+
 
 class Level : BaseLevel{
 public:
@@ -21,6 +23,7 @@ public:
 	void resetPlayer();
 
 	void resetSidekick();
+
 
 private:
 
@@ -45,6 +48,16 @@ private:
 		NONE, 
 		FAIL
 	};
+
+	
+
+	enum modes {
+		EASY,
+		NORMAL,
+		HARD
+	};
+	
+	
 
 	TextureManager* textMan;
 	GameObject gridBoard;
@@ -72,8 +85,11 @@ private:
 	sf::Vector2i checkPoint = { 19, 5 };
 	sf::Vector2i manMadeCheckPoint = { 19, 9 };
 	sf::Vector2i boardDimensions{ 20,10 };
+	TitleScreen title;
 	bool checkPointEnabled;
 	bool manMadeEnabled;
+	bool easyMode;
+	bool hardMode;
 	float timeInStep = 0.f;
 	bool soundPlayed = false;
 	float cellDim;
@@ -81,6 +97,7 @@ private:
 	float damagedTimer = 0.f;
 	float alertHasBeenActiveFor = TIME_TO_DISPLAY_ALERT;
 	float boardTop, boardRight, boardBottom, boardLeft;
+	int selectedMode;
 	
 	// analytics values
 	float timeTaken = 0.f;

@@ -1,5 +1,10 @@
 #include "TitleScreen.h"
-
+#include <iostream>
+#include "Level.h"
+using namespace std;
+TitleScreen::TitleScreen()
+{
+}
 TitleScreen::TitleScreen(sf::RenderWindow* hwnd, Input* in, GameState* gs, AudioManager* aud, TextureManager* tm)
 {
 	window = hwnd;
@@ -14,7 +19,6 @@ TitleScreen::TitleScreen(sf::RenderWindow* hwnd, Input* in, GameState* gs, Audio
 	float fanProportion = textMan->getProportions("sadBear");
 	fan.setSize(sf::Vector2f(window->getSize().x * 0.2, window->getSize().x * 0.2 * fanProportion));
 	fan.setTexture(&textMan->getTexture("sadBear"));
-	
 	// .. for the text
 	montsFont.loadFromFile("font/montS.ttf");
 	explanationText.setFont(montsFont);
@@ -29,7 +33,11 @@ TitleScreen::TitleScreen(sf::RenderWindow* hwnd, Input* in, GameState* gs, Audio
 	singleRunText.setCharacterSize(40);
 	singleRunText.setPosition(window->getSize().x * 0.1, window->getSize().y * 0.7);
 	singleRunText.setString("Press 1 to practice LECTURER.\nPress 2 to practice RUNNER.\nPress 3 to practice WIZARD.\nPress 4 to practice SURFER");
-
+	difficultyText.setFont(montsFont);
+	difficultyText.setCharacterSize(40);
+	difficultyText.setPosition(window->getSize().x - 700, window->getSize().y - 100);
+	difficultyText.setString("DIFFICULTY: NORMAL");
+	selectedMode = 1;
 
 	// .. background
 	// initialise background. base size: 1920, 1080
@@ -38,10 +46,66 @@ TitleScreen::TitleScreen(sf::RenderWindow* hwnd, Input* in, GameState* gs, Audio
 	bg.setSize(sf::Vector2f(1920 * bgScalar, 1080* bgScalar));
 
 	animTimer = 0.0f;
+	
 }
 
 TitleScreen::~TitleScreen()
 {
+}
+
+
+void TitleScreen::checkDifficulty()
+{
+
+	if (input->isKeyDown(sf::Keyboard::Right) && difficultyText.getString() == "DIFFICULTY: NORMAL")
+	{
+		difficultyText.setString("DIFFICULTY: HARD");
+		input->setKeyUp(sf::Keyboard::Right);
+		selectedMode = 2;
+		
+	}
+	else if (input->isKeyDown(sf::Keyboard::Right) && difficultyText.getString() == "DIFFICULTY: HARD")
+	{
+		difficultyText.setString("DIFFICULTY: EASY");
+		
+		input->setKeyUp(sf::Keyboard::Right);
+		selectedMode = 0;
+		
+	}
+	else if (input->isKeyDown(sf::Keyboard::Right) && difficultyText.getString() == "DIFFICULTY: EASY")
+	{
+		difficultyText.setString("DIFFICULTY: NORMAL");
+		
+		input->setKeyUp(sf::Keyboard::Right);
+		selectedMode = 1;
+	}
+	else if (input->isKeyDown(sf::Keyboard::Left) && difficultyText.getString() == "DIFFICULTY: NORMAL")
+	{
+		difficultyText.setString("DIFFICULTY: EASY");
+		
+		input->setKeyUp(sf::Keyboard::Left);
+		selectedMode = 0;
+	}
+	else if (input->isKeyDown(sf::Keyboard::Left) && difficultyText.getString() == "DIFFICULTY: EASY")
+	{
+		difficultyText.setString("DIFFICULTY: HARD");
+		
+		input->setKeyUp(sf::Keyboard::Left);
+		selectedMode = 2;
+	}
+	else if (input->isKeyDown(sf::Keyboard::Left) && difficultyText.getString() == "DIFFICULTY: HARD")
+	{
+		
+		difficultyText.setString("DIFFICULTY: NORMAL");
+		
+		input->setKeyUp(sf::Keyboard::Left);
+		selectedMode = 1;
+	}
+}
+
+int TitleScreen::getSelectedMode()
+{
+	return selectedMode;
 }
 
 void TitleScreen::handleInput(float dt)
@@ -71,6 +135,8 @@ void TitleScreen::handleInput(float dt)
 		gameState->setCurrentState(State::PRE_FOUR);
 		gameState->setSingleRun(true);
 	}
+	checkDifficulty();
+	cout << selectedMode;
 }
 
 void TitleScreen::update(float dt)
@@ -93,5 +159,6 @@ void TitleScreen::render()
 	window->draw(explanationText);
 	window->draw(titleText);
 	window->draw(singleRunText);
+	window->draw(difficultyText);
 	endDraw();
 }

@@ -14,6 +14,7 @@
 #include "TextureManager.h"
 #include "Framework/AudioManager.h"
 #include "Framework/GameState.h"
+using namespace std;
 
 
 void windowProcess(sf::RenderWindow* window, Input* in)
@@ -75,19 +76,19 @@ int main()
 {
 	//Create the window
 	sf::RenderWindow window(sf::VideoMode(1600, 900), "Forbidden Rhythm");
-
 	// Initialise input and level objects.
 	AudioManager audioManager;
 	Input input;
 	GameState gameState;
 	TextureManager* textureManager = new TextureManager();
-
 	TitleScreen TitleScreen(&window, &input, &gameState, &audioManager, textureManager);
 	Level motivationLevel(&window, &input, &gameState, &audioManager, textureManager);
 	WizardLevel wizardLevel(&window, &input, &gameState, &audioManager, textureManager, 2);
 	TransitionLevel transLevel(&window, &input, &gameState, &audioManager, textureManager);
 	RunnerLevel runnerLevel(&window, &input, &gameState, &audioManager, textureManager);
 	SurferLevel surferLevel(&window, &input, &gameState, &audioManager, textureManager);
+
+
 	// begin on the title screen
 	gameState.setCurrentState(State::TITLE);
 
@@ -97,7 +98,7 @@ int main()
 
 	// crank the music
 	audioManager.playMusicbyName("digitalLove");
-
+	
 
 	// Game Loop
 	while (window.isOpen())

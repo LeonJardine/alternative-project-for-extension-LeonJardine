@@ -4,10 +4,14 @@
 #include "TextureManager.h"
 #include "Framework/BaseLevel.h"
 
+
 class TitleScreen : BaseLevel {
 public:
+	TitleScreen();
 	TitleScreen(sf::RenderWindow* hwnd, Input* in, GameState* gs, AudioManager* aud, TextureManager* tm);
 	~TitleScreen();
+	void setSelectedMode(int selectedMode);
+	int  getSelectedMode();
 
 	void handleInput(float dt) override;
 	void update(float dt);
@@ -23,8 +27,14 @@ public:
 	sf::Text explanationText;
 	sf::Text titleText;
 	sf::Text singleRunText;
+	sf::Text difficultyText;
 	sf::Font montsFont;
+	int selectedMode;
+
+	void checkDifficulty();
 
 	float animTimer;
+	
+	
 
 };

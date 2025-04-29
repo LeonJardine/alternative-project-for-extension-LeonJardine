@@ -26,6 +26,7 @@ TransitionLevel::~TransitionLevel()
 {
 }
 
+
 void TransitionLevel::handleInput(float dt)
 {
 	if (input->isPressed(sf::Keyboard::Enter))

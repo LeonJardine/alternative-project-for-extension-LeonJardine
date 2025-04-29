@@ -13,6 +13,9 @@ WizardLevel::WizardLevel(sf::RenderWindow* hwnd, Input* in, GameState* gs, Audio
 	lastAction = NONE;
 	beatsPlayed = 0;
 
+	easyMode = false;
+	hardMode = false;
+
 	// seed RNG
 	std::srand(static_cast<unsigned>(std::time(nullptr)));
 
@@ -93,7 +96,9 @@ WizardLevel::WizardLevel(sf::RenderWindow* hwnd, Input* in, GameState* gs, Audio
 		checkPoint,
 		manMadeCheckPoint,
 		2,
-		textMan
+		textMan,
+		easyMode,
+		hardMode
 	);
 
 	// setup indicators
@@ -233,7 +238,7 @@ void WizardLevel::handleInput(float dt)
 		}
 	}
 
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && easyMode)
 	{
 		manMadeCheckPoint = { playerPosition.first, playerPosition.second };
 	}
@@ -272,13 +277,13 @@ void WizardLevel::update(float dt)
 		lastControlChange = timeTaken;
 	}
 
-	if (!checkPointEnabled && playerPosition.second == checkPoint.y && playerPosition.first == checkPoint.x)
+	if (!checkPointEnabled && playerPosition.second == checkPoint.y && playerPosition.first == checkPoint.x && !hardMode)
 	{
 		checkPointEnabled = true;
 		manMadeEnabled = false;
 		audio->playSoundbyName("success");
 	}
-	else if (!manMadeEnabled && playerPosition.second == manMadeCheckPoint.y && playerPosition.first == manMadeCheckPoint.x)
+	else if (!manMadeEnabled && playerPosition.second == manMadeCheckPoint.y && playerPosition.first == manMadeCheckPoint.x && easyMode)
 	{
 		checkPointEnabled = false;
 		manMadeEnabled = true;
@@ -527,7 +532,9 @@ void WizardLevel::reset()
 		checkPoint,
 		manMadeCheckPoint,
 		2,
-		textMan
+		textMan,
+		easyMode,
+		hardMode
 	);
 
 	checkPointEnabled = false;

@@ -1,5 +1,6 @@
 #include "Level.h"
-
+#include <iostream>
+using namespace std;
 Level::Level(sf::RenderWindow* hwnd, Input* in, GameState* gs, AudioManager* aud, TextureManager* tm)
 {
 	window = hwnd;
@@ -10,6 +11,24 @@ Level::Level(sf::RenderWindow* hwnd, Input* in, GameState* gs, AudioManager* aud
 
 	// create the lecturer object.
 	lecturer = Lecturer(window, textMan);
+
+	title = TitleScreen(window, input, gameState, audio, textMan);
+	
+	switch (title.getSelectedMode())
+	{
+	case EASY:
+		easyMode = true;
+		hardMode = false;
+		break;
+	case NORMAL:
+		easyMode = false;
+		hardMode = false;
+		break;
+	case HARD:
+		easyMode = false;
+		hardMode = true;
+		break;
+	}
 
 	// initialise game objects
 	selectedAction = NONE;
@@ -98,7 +117,9 @@ Level::Level(sf::RenderWindow* hwnd, Input* in, GameState* gs, AudioManager* aud
 		checkPoint,
 		manMadeCheckPoint,
 		1,	
-		textMan
+		textMan,
+		easyMode,
+		hardMode
 	);
 
 	// setup indicators
@@ -138,6 +159,7 @@ Level::~Level()
 // handle user input
 void Level::handleInput(float dt)
 {
+
 	if (damagedTimer > 0)
 	{
 		damagedTimer -= dt;
@@ -230,7 +252,7 @@ void Level::handleInput(float dt)
 		}
 		
 	}
-	if(sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+	if(sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && easyMode)
 	{
 		manMadeCheckPoint = { playerPosition.first, playerPosition.second };
 	}
@@ -239,6 +261,7 @@ void Level::handleInput(float dt)
 // Update game objects
 void Level::update(float dt)
 {
+	
 	// display alert or reset alert.
 	if (alert.getString() != "" && alertHasBeenActiveFor < TIME_TO_DISPLAY_ALERT)
 	{
@@ -265,7 +288,7 @@ void Level::update(float dt)
 	}
 
 	// check for checkpoint
-	if (!checkPointEnabled && playerPosition.second == checkPoint.y && playerPosition.first == checkPoint.x)
+	if (!checkPointEnabled && playerPosition.second == checkPoint.y && playerPosition.first == checkPoint.x && !hardMode)
 	{
 		checkPointEnabled = true;
 		manMadeEnabled = false;
@@ -273,7 +296,7 @@ void Level::update(float dt)
 		alert.setString("checkpoint");
 		alertHasBeenActiveFor = 0.f;
 	}
-	else if (!manMadeEnabled && playerPosition.second == manMadeCheckPoint.y && playerPosition.first == manMadeCheckPoint.x)
+	else if (!manMadeEnabled && playerPosition.second == manMadeCheckPoint.y && playerPosition.first == manMadeCheckPoint.x && easyMode)
 	{
 		checkPointEnabled = false;
 		manMadeEnabled = true;
@@ -619,7 +642,9 @@ void Level::reset()
 		checkPoint,
 		manMadeCheckPoint,
 		1,
-		textMan
+		textMan,
+		easyMode,
+		hardMode
 	);
 
 	// set state.

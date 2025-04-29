@@ -9,7 +9,7 @@ class StageGrid
 {
 public:
 	StageGrid();
-	StageGrid(sf::Vector2i dimensions, float cellSize, sf::Vector2f position, sf::Vector2i start, sf::Vector2i end, sf::Vector2i cp,sf::Vector2i cp2, int stage, TextureManager* tm);
+	StageGrid(sf::Vector2i dimensions, float cellSize, sf::Vector2f position, sf::Vector2i start, sf::Vector2i end, sf::Vector2i cp,sf::Vector2i cp2, int stage, TextureManager* tm, bool easyMode, bool hardMode);
 
 	enum cellState
 	{
