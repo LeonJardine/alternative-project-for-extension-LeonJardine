@@ -58,16 +58,16 @@ void TransitionLevel::update(float dt)
 	switch (gameState->getCurrentState())
 	{
 	case State::PRE_ONE:
-		explain.setString("Move with WASD.\nMove in time with the claps.\nAvoid tanks and pits.\nThey are metaphors for adversary.\nThere is a checkpoint halfway round.\nOr if you're on easy mode you can place a checkpoint anywhere on the map.\nIt's indicated ny the icon at the bottom right of the screen.\nIt will be yellow when enabled.\nYou cannot pause.\nYou will have assistance.\nYou will be motivated.\nIt will not be helpful especially if you're on hard.\nHit Enter.");
+		explain.setString("Move with WASD.\nMove in time with the claps.\nAvoid tanks and pits.\nThey are metaphors for adversary.\nThere is a checkpoint halfway round.\nOr if you're on easy mode you can place a checkpoint anywhere on the map.\nIt's indicated ny the icon at the bottom right of the screen.\nIt will be yellow when enabled.\nYou cannot pause.\nYou will have assistance.\nCollect the cherry and get longer strides.\nYou will be motivated.\nIt will not be helpful especially if you're on hard.\nHit Enter.");
 		break;
 	case State::PRE_TWO:
 		explain.setString("Kick (enter) wooden boxes.\nJump over (space) metal ones.\nYou got this.\nGood Luck.\nHit Enter");
 		break;
 	case State::PRE_THREE:
-		explain.setString("Move with WASD.\nMove in time with the claps.\nAvoid Tanks and Pits.\nThere is a checkpoint (unless you're on hard mode.\nAnd if your on easy you get to place a checkpoint anywhere indicated\nby the icon in the top right.\nYou will be assisted.\nKind of.\nHit Enter.\nGood Luck.");
+		explain.setString("Move with WASD.\nMove in time with the claps.\nAvoid Tanks and Pits.\nThere is a checkpoint (unless you're on hard mode.\nAnd if your on easy you get to place a checkpoint anywhere indicated\nby the icon in the top right.\nYou will be assisted.\n Find the cherry and get longer strides.\nKind of.\nHit Enter.\nGood Luck.");
 		break;
 	case State::PRE_FOUR:
-		explain.setString("Kick (enter) wooden boxes.\nJump over (space) metal ones.\nYou got this.\nGood Luck.\nHit Enter");
+		explain.setString("Bite (enter) the goldfish.\nJump over (space) oil spills.\nYou got this.\nGood Luck.\nHit Enter");
 		break;
 	case State::ENDGAME:
 		runResults* results = gameState->getResults();

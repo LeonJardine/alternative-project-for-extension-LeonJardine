@@ -10,8 +10,9 @@ public:
 	TitleScreen();
 	TitleScreen(sf::RenderWindow* hwnd, Input* in, GameState* gs, AudioManager* aud, TextureManager* tm);
 	~TitleScreen();
-	void setSelectedMode(int selectedMode);
+	
 	int  getSelectedMode();
+	bool getmodeChange();
 
 	void handleInput(float dt) override;
 	void update(float dt);
@@ -30,6 +31,7 @@ public:
 	sf::Text difficultyText;
 	sf::Font montsFont;
 	int selectedMode;
+	bool modechange;
 
 	void checkDifficulty();
 

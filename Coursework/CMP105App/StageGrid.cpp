@@ -21,7 +21,7 @@ StageGrid::StageGrid()
 
 
 // create grid, stage current [1-3] for difficulty, i.e, number of hazards..
-StageGrid::StageGrid(sf::Vector2i dimensions, float cellSizeIn, sf::Vector2f positionIn, sf::Vector2i start, sf::Vector2i end, sf::Vector2i cp, sf::Vector2i cp2, int stage, TextureManager* tm, bool easyMode, bool hardMode)
+StageGrid::StageGrid(sf::Vector2i dimensions, float cellSizeIn, sf::Vector2f positionIn, sf::Vector2i start, sf::Vector2i end, sf::Vector2i cp, sf::Vector2i cp2, int stage, TextureManager* tm, bool easyMode, bool hardMode, sf::Vector2i skipCherry)
 {
 	textMan = tm;
 	cellSize = cellSizeIn;
@@ -48,6 +48,7 @@ StageGrid::StageGrid(sf::Vector2i dimensions, float cellSizeIn, sf::Vector2f pos
 	}
 	grid[end.x][end.y] = cellState::END;
 	grid[start.x][start.y] = cellState::START;
+	grid[skipCherry.x][skipCherry.y] = cellState::SKIPCHERRY;
 	if (!hardMode)
 	{
 		grid[cp.x][cp.y] = cellState::CHECKPOINT;
@@ -205,7 +206,7 @@ void StageGrid::update(int frames)
 
 
 // draw the current grid state. Takes window to draw to
-void StageGrid::render(sf::RenderWindow* wnd, bool cp_on, bool cp2_on)
+void StageGrid::render(sf::RenderWindow* wnd, bool cp_on, bool cp2_on, bool cherryPicked)
 {
 	// Draw all safe tile.
 	for (int x = 0; x < grid.size(); ++x)
@@ -258,6 +259,9 @@ void StageGrid::render(sf::RenderWindow* wnd, bool cp_on, bool cp2_on)
 			case cellState::HAZARD_RIGHT:
 				cellOverlay.setTexture(&textMan->getTexture("tankRight"));
 				break;
+			case cellState::SKIPCHERRY:
+				if (cherryPicked) cellOverlay.setTexture(&textMan->getTexture("trans"));
+				else cellOverlay.setTexture(&textMan->getTexture("cherry"));
 			}
 			
 			wnd->draw(cellOverlay);

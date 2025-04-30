@@ -13,6 +13,7 @@
 
 class Level : BaseLevel{
 public:
+	void selectedmode(int selectedmode, bool modechange);
 	Level(sf::RenderWindow* hwnd, Input* in, GameState* gs, AudioManager* aud, TextureManager* tm);
 	~Level();
 
@@ -85,6 +86,7 @@ private:
 	sf::Vector2i checkPoint = { 19, 5 };
 	sf::Vector2i manMadeCheckPoint = { 19, 9 };
 	sf::Vector2i boardDimensions{ 20,10 };
+	sf::Vector2i skipCherry = { 9,8 };
 	TitleScreen title;
 	bool checkPointEnabled;
 	bool manMadeEnabled;
@@ -98,6 +100,9 @@ private:
 	float alertHasBeenActiveFor = TIME_TO_DISPLAY_ALERT;
 	float boardTop, boardRight, boardBottom, boardLeft;
 	int selectedMode;
+	bool cherryActive;
+	int beatsRemaining = -1;
+	bool cherryPicked;
 	
 	// analytics values
 	float timeTaken = 0.f;

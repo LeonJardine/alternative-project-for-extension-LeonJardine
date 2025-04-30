@@ -5,6 +5,7 @@
 #include "StageGrid.h"
 #include "Player.h"
 #include "LecturEH.h"
+#include "TitleScreen.h"
 #include <random>
 #include <algorithm>
 
@@ -18,6 +19,7 @@ public:
 	void handleInput(float dt) override;
 	void render() override;
 
+	void selectedmode(int selectedmode, bool modechange);
 	void randomiseControls();
 
 	void reset();
@@ -33,6 +35,13 @@ private:
 		FAIL
 	};
 
+	enum modes {
+		EASY,
+		NORMAL,
+		HARD
+	};
+
+	int selectedMode;
 	TextureManager* textMan;
 	LecturEH* lecturer;
 	StageGrid grid;
@@ -45,6 +54,7 @@ private:
 	GameObject progressInStepBG;
 	GameObject levelBG;
 	GameObject controlBG;
+	TitleScreen title;
 	std::pair<int, int> playerPosition;
 	actions selectedAction;
 	actions lastAction;
@@ -56,11 +66,15 @@ private:
 	sf::Vector2i checkPoint{ 10, 4 };
 	sf::Vector2i manMadeCheckPoint{ 19, 0 };
 	sf::Vector2i boardDimensions{ 20,10 };
+	sf::Vector2i skipCherry = { 13,7 };
 	bool checkPointEnabled = false;
 	bool manMadeEnabled = false;
 	bool easyMode;
 	bool hardMode;
 	bool stepFailed = false;
+	bool cherryActive;
+	int beatsRemaining = -1;
+	bool cherryPicked;
 	std::vector<char> currentControls = { 'W', 'A', 'S', 'D' };
 
 	// Default variables for level class.

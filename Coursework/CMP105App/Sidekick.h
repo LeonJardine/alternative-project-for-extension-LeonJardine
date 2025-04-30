@@ -11,19 +11,19 @@ public:
 
 	void handleInput(float dt);
 	void setDamaged(float timer);
-
+	bool isDamaged();
 	void update(float dt);
 	void setFlipped(bool f);
 	void setJumping(float h, float t);
-	
+	bool isKicking();
 	void setKicking(float t);
-	
+	bool canJump() const;
 
 	sf::Texture sidekick;
 	Input in;
 	Animation walk;
 	Animation damaged;
-	Animation kick;
+	Animation bite;
 	Animation* currentAnimation;
 
 	// jump component

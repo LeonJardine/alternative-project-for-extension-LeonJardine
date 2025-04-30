@@ -21,7 +21,7 @@ SurferLevel::SurferLevel(sf::RenderWindow* hwnd, Input* in, GameState* gs, Audio
 	for (int i = 0; i < 21; ++i)
 	{
 		GameObject bg;
-		bg.setTexture(&textMan->getTexture("bg_Scroll"));
+		bg.setTexture(&textMan->getTexture("bg_scroll2"));
 		bg.setSize(sf::Vector2f(1024.0f * bgScalar, 1024.0f * bgScalar));
 		bg.setPosition(i * 1024 * bgScalar, 0);
 		BGs.push_back(bg);
@@ -50,18 +50,18 @@ SurferLevel::SurferLevel(sf::RenderWindow* hwnd, Input* in, GameState* gs, Audio
 		{
 		case 0:
 			// kickable
-			newObj.setTexture(&textMan->getTexture("kickable"));
+			newObj.setTexture(&textMan->getTexture("goldfish"));
 			newObj.setPosition(placementIndex, window->getSize().y * 0.5);
 			newObj.setSize(sf::Vector2f(window->getSize().y * 0.1, window->getSize().y * 0.2));
 			kickables.push_back(newObj);
 			break;
 		case 1:
 			// jumpable
-			newObj.setTexture(&textMan->getTexture("jumpable"));
+			newObj.setTexture(&textMan->getTexture("oil_spill"));
 			jumpables.push_back(newObj);
 			break;
 		case 2:
-			newObj.setTexture(&textMan->getTexture("jumpable"));
+			newObj.setTexture(&textMan->getTexture("oil_spill"));
 			jumpables.push_back(newObj);
 			GameObject secondObj = newObj;
 			secondObj.setPosition(secondObj.getPosition().x + secondObj.getSize().x, secondObj.getPosition().y);

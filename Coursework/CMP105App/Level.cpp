@@ -1,6 +1,8 @@
 #include "Level.h"
 #include <iostream>
 using namespace std;
+
+
 Level::Level(sf::RenderWindow* hwnd, Input* in, GameState* gs, AudioManager* aud, TextureManager* tm)
 {
 	window = hwnd;
@@ -12,23 +14,9 @@ Level::Level(sf::RenderWindow* hwnd, Input* in, GameState* gs, AudioManager* aud
 	// create the lecturer object.
 	lecturer = Lecturer(window, textMan);
 
-	title = TitleScreen(window, input, gameState, audio, textMan);
+
 	
-	switch (title.getSelectedMode())
-	{
-	case EASY:
-		easyMode = true;
-		hardMode = false;
-		break;
-	case NORMAL:
-		easyMode = false;
-		hardMode = false;
-		break;
-	case HARD:
-		easyMode = false;
-		hardMode = true;
-		break;
-	}
+	
 
 	// initialise game objects
 	selectedAction = NONE;
@@ -109,17 +97,18 @@ Level::Level(sf::RenderWindow* hwnd, Input* in, GameState* gs, AudioManager* aud
 
 	// setup grid component.
 	grid = StageGrid(
-		sf::Vector2i(numCols, numRows), 
-		cellDim, 
-		gridBoard.getPosition(), 
-		start, 
-		end, 
+		sf::Vector2i(numCols, numRows),
+		cellDim,
+		gridBoard.getPosition(),
+		start,
+		end,
 		checkPoint,
 		manMadeCheckPoint,
-		1,	
+		1,
 		textMan,
 		easyMode,
-		hardMode
+		hardMode,
+		skipCherry
 	);
 
 	// setup indicators
@@ -258,10 +247,81 @@ void Level::handleInput(float dt)
 	}
 }
 
+void Level::selectedmode(int selectedmode ,bool modechange)
+{
+	selectedMode = selectedmode;
+	if (modechange)
+	{
+		for (int i = 0; i < 1; i++)
+		{
+			switch (selectedMode)
+			{
+			case EASY:
+				easyMode = true;
+				hardMode = false;
+				grid = StageGrid(
+					sf::Vector2i(20, 10),
+					cellDim,
+					gridBoard.getPosition(),
+					start,
+					end,
+					checkPoint,
+					manMadeCheckPoint,
+					1,
+					textMan,
+					easyMode,
+					hardMode,
+					skipCherry
+				);
+				modechange = false;
+				break;
+			case NORMAL:
+				easyMode = false;
+				hardMode = false;
+				grid = StageGrid(
+					sf::Vector2i(20, 10),
+					cellDim,
+					gridBoard.getPosition(),
+					start,
+					end,
+					checkPoint,
+					manMadeCheckPoint,
+					1,
+					textMan,
+					easyMode,
+					hardMode,
+					skipCherry
+				);
+				modechange = false;
+				break;
+			case HARD:
+				easyMode = false;
+				hardMode = true;
+				grid = StageGrid(
+					sf::Vector2i(20, 10),
+					cellDim,
+					gridBoard.getPosition(),
+					start,
+					end,
+					checkPoint,
+					manMadeCheckPoint,
+					1,
+					textMan,
+					easyMode,
+					hardMode,
+					skipCherry
+				);
+				modechange = false;
+				break;
+			}
+		}
+	}
+}
 // Update game objects
 void Level::update(float dt)
 {
-	
+
+
 	// display alert or reset alert.
 	if (alert.getString() != "" && alertHasBeenActiveFor < TIME_TO_DISPLAY_ALERT)
 	{
@@ -305,6 +365,13 @@ void Level::update(float dt)
 		alertHasBeenActiveFor = 0.f;
 	}
 
+	if (!cherryActive && playerPosition.second == skipCherry.y && playerPosition.first == skipCherry.x)
+	{
+		bool cherryPicked = true;
+		cherryActive = true;
+		skipCherry.x = 0;
+		skipCherry.y = 0;
+	}
 	
 
 //check for player speed boost
@@ -396,6 +463,15 @@ void Level::update(float dt)
 		progressInStep.setFillColor(sf::Color::Red);
 	}
 
+	if (cherryActive && beatsRemaining == -1)
+	{
+		beatsRemaining = beatsPlayed + 2;
+	}
+	if (beatsRemaining == beatsPlayed)
+	{
+		cherryActive = false;
+	}
+
 	// movement
 	if (timeInStep >= TIME_PER_STEP)
 	{
@@ -412,7 +488,15 @@ void Level::update(float dt)
 				resetPlayer();
 				break;
 			}
-			playerPosition.second--;	// positive-y innit.
+			if (!cherryActive)
+			{
+				playerPosition.second--;// positive-y innit.
+			}
+			else if (cherryActive)
+			{
+				playerPosition.second--;
+				playerPosition.second--;
+			}
 			break;
 		case RIGHT:
 			if (playerPosition.first == boardDimensions.x - 1)
@@ -420,7 +504,15 @@ void Level::update(float dt)
 				resetPlayer();
 				break;
 			}
-			playerPosition.first++;
+			if (!cherryActive)
+			{
+				playerPosition.first++;// positive-y innit.
+			}
+			else if (cherryActive)
+			{
+				playerPosition.first++;
+				playerPosition.first++;
+			}
 			player.setFlipped(false);
 			break;
 		case DOWN:
@@ -429,7 +521,15 @@ void Level::update(float dt)
 				resetPlayer();
 				break;
 			}
-			playerPosition.second++;
+			if (!cherryActive)
+			{
+				playerPosition.second++;// positive-y innit.
+			}
+			else if (cherryActive)
+			{
+				playerPosition.second++;
+				playerPosition.second++;
+			}
 			break;
 		case LEFT:
 			if (playerPosition.first == 0)
@@ -437,7 +537,15 @@ void Level::update(float dt)
 				resetPlayer();
 				break;
 			}
-			playerPosition.first--;
+			if (!cherryActive)
+			{
+				playerPosition.first--;// positive-y innit.
+			}
+			else if (cherryActive)
+			{
+				playerPosition.first--;
+				playerPosition.first--;
+			}
 			break;
 		case ARROW_UP:
 			if (sidekickPosition.second == 0)
@@ -509,7 +617,7 @@ void Level::render()
 {
 	beginDraw();
 	window->draw(levelBG);
-	grid.render(window, checkPointEnabled, manMadeEnabled);
+	grid.render(window, checkPointEnabled, manMadeEnabled, cherryPicked);
 	window->draw(controls[0]);
 	window->draw(player);
 	window->draw(sidekick);
@@ -564,6 +672,7 @@ void Level::reset()
 	timeTaken = 0.f;
 	misses = 0;
 	deaths = 0;
+	beatsRemaining = -1;
 
 	// initialise background. base size: 5760, 3240
 	levelBG.setTexture(&textMan->getTexture("redSkyBG"));
@@ -644,7 +753,8 @@ void Level::reset()
 		1,
 		textMan,
 		easyMode,
-		hardMode
+		hardMode,
+		skipCherry
 	);
 
 	// set state.

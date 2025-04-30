@@ -1,7 +1,7 @@
 #pragma once
 #include "Framework/BaseLevel.h"
 #include "TextureManager.h"
-#include "Player.h"
+#include "Sidekick.h"
 #include <random>
 #include <iostream>
 
@@ -19,7 +19,7 @@ public:
 
 private:
 	TextureManager* textMan;
-	Player p;
+	Sidekick p;
 	std::vector<GameObject> BGs;
 	std::vector<GameObject> jumpables;
 	std::vector<GameObject> kickables;
@@ -27,7 +27,7 @@ private:
 	std::vector<float> explosionTimer;
 
 	GameObject progressLine;
-	Player progressP;
+	Sidekick progressP;
 	sf::CircleShape destinationPoint;
 
 	GameObject moon;

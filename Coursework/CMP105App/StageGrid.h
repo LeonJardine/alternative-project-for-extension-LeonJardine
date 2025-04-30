@@ -9,7 +9,7 @@ class StageGrid
 {
 public:
 	StageGrid();
-	StageGrid(sf::Vector2i dimensions, float cellSize, sf::Vector2f position, sf::Vector2i start, sf::Vector2i end, sf::Vector2i cp,sf::Vector2i cp2, int stage, TextureManager* tm, bool easyMode, bool hardMode);
+	StageGrid(sf::Vector2i dimensions, float cellSize, sf::Vector2f position, sf::Vector2i start, sf::Vector2i end, sf::Vector2i cp,sf::Vector2i cp2, int stage, TextureManager* tm, bool easyMode, bool hardMode, sf::Vector2i skipCherry);
 
 	enum cellState
 	{
@@ -22,11 +22,12 @@ public:
 		START,
 		END,
 		CHECKPOINT,
-		MADECHECKPOINT
+		MADECHECKPOINT,
+		SKIPCHERRY
 	};
 
 	void update(int frames);
-	void render(sf::RenderWindow* wnd, bool cp_on, bool cp2_on);
+	void render(sf::RenderWindow* wnd, bool cp_on, bool cp2_on, bool cherryPicked);
 	bool playerHit(std::pair<int, int> pos);
 
 private:

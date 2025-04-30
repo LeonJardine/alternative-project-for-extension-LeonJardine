@@ -13,8 +13,7 @@ WizardLevel::WizardLevel(sf::RenderWindow* hwnd, Input* in, GameState* gs, Audio
 	lastAction = NONE;
 	beatsPlayed = 0;
 
-	easyMode = false;
-	hardMode = false;
+	
 
 	// seed RNG
 	std::srand(static_cast<unsigned>(std::time(nullptr)));
@@ -98,7 +97,8 @@ WizardLevel::WizardLevel(sf::RenderWindow* hwnd, Input* in, GameState* gs, Audio
 		2,
 		textMan,
 		easyMode,
-		hardMode
+		hardMode,
+		skipCherry
 	);
 
 	// setup indicators
@@ -267,6 +267,22 @@ void WizardLevel::update(float dt)
 		timeTaken += dt;
 	}
 
+	if (!cherryActive && playerPosition.second == skipCherry.y && playerPosition.first == skipCherry.x)
+	{
+		bool cherryPicked = true;
+		cherryActive = true;
+		skipCherry.x = 0;
+		skipCherry.y = 0;
+	}
+	if (cherryActive && beatsRemaining == -1)
+	{
+		beatsRemaining = beatsPlayed + 2;
+	}
+	if (beatsRemaining == beatsPlayed)
+	{
+		cherryActive = false;
+	}
+
 	player.update(dt);
 	lecturer->update(dt);
 
@@ -367,7 +383,15 @@ void WizardLevel::update(float dt)
 				resetPlayer();
 				break;
 			}
-			playerPosition.second--;	// positive-y innit.
+			if (!cherryActive)
+			{
+				playerPosition.second--;// positive-y innit.
+			}
+			else if (cherryActive)
+			{
+				playerPosition.second--;
+				playerPosition.second--;
+			}
 			break;
 		case RIGHT:
 			if (playerPosition.first == boardDimensions.x - 1)
@@ -375,7 +399,15 @@ void WizardLevel::update(float dt)
 				resetPlayer();
 				break;
 			}
-			playerPosition.first++;
+			if (!cherryActive)
+			{
+				playerPosition.first++;// positive-y innit.
+			}
+			else if (cherryActive)
+			{
+				playerPosition.first++;
+				playerPosition.first++;
+			}
 			player.setFlipped(false);
 			break;
 		case DOWN:
@@ -384,7 +416,15 @@ void WizardLevel::update(float dt)
 				resetPlayer();
 				break;
 			}
-			playerPosition.second++;
+			if (!cherryActive)
+			{
+				playerPosition.second++;// positive-y innit.
+			}
+			else if (cherryActive)
+			{
+				playerPosition.second++;
+				playerPosition.second++;
+			}
 			break;
 		case LEFT:
 			if (playerPosition.first == 0)
@@ -392,8 +432,15 @@ void WizardLevel::update(float dt)
 				resetPlayer();
 				break;
 			}
-			playerPosition.first--;
-			break;
+			if (!cherryActive)
+			{
+				playerPosition.first--;// positive-y innit.
+			}
+			else if (cherryActive)
+			{
+				playerPosition.first--;
+				playerPosition.first--;
+			}
 		}
 		player.setPosition(sf::Vector2f(
 			gridBoard.getPosition().x + cellDim * playerPosition.first,
@@ -411,7 +458,7 @@ void WizardLevel::render()
 	beginDraw();
 	window->draw(levelBG);
 	window->draw(controlBG);
-	grid.render(window, checkPointEnabled,manMadeEnabled);
+	grid.render(window, checkPointEnabled,manMadeEnabled, cherryPicked);
 	window->draw(controls[0]);
 	window->draw(player);
 	window->draw(progressInStepBG);
@@ -427,6 +474,77 @@ void WizardLevel::render()
 		window->draw(label);
 	}
 	endDraw();
+}
+
+void WizardLevel::selectedmode(int selectedmode, bool modechange)
+{
+	selectedMode = selectedmode;
+	if (modechange)
+	{
+		for (int i = 0; i < 1; i++)
+		{
+			switch (selectedMode)
+			{
+			case EASY:
+				easyMode = true;
+				hardMode = false;
+				grid = StageGrid(
+					sf::Vector2i(20, 10),
+					cellDim,
+					gridBoard.getPosition(),
+					start,
+					end,
+					checkPoint,
+					manMadeCheckPoint,
+					2,
+					textMan,
+					easyMode,
+					hardMode,
+					skipCherry
+				);
+				modechange = false;
+				break;
+			case NORMAL:
+				easyMode = false;
+				hardMode = false;
+				grid = StageGrid(
+					sf::Vector2i(20, 10),
+					cellDim,
+					gridBoard.getPosition(),
+					start,
+					end,
+					checkPoint,
+					manMadeCheckPoint,
+					2,
+					textMan,
+					easyMode,
+					hardMode,
+					skipCherry
+				);
+				modechange = false;
+				break;
+			case HARD:
+				easyMode = false;
+				hardMode = true;
+				grid = StageGrid(
+					sf::Vector2i(20, 10),
+					cellDim,
+					gridBoard.getPosition(),
+					start,
+					end,
+					checkPoint,
+					manMadeCheckPoint,
+					2,
+					textMan,
+					easyMode,
+					hardMode,
+					skipCherry
+				);
+				modechange = false;
+				break;
+			}
+		}
+	}
 }
 
 // change order of WASD controls
@@ -534,7 +652,8 @@ void WizardLevel::reset()
 		2,
 		textMan,
 		easyMode,
-		hardMode
+		hardMode,
+		skipCherry
 	);
 
 	checkPointEnabled = false;

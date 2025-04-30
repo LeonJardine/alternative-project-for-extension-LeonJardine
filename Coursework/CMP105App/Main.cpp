@@ -116,6 +116,9 @@ int main()
 		case State::TITLE:
 			TitleScreen.handleInput(deltaTime);
 			TitleScreen.update(deltaTime);
+			TitleScreen.checkDifficulty();
+			motivationLevel.selectedmode(TitleScreen.getSelectedMode(), TitleScreen.getmodeChange());
+			wizardLevel.selectedmode(TitleScreen.getSelectedMode(), TitleScreen.getmodeChange());
 			TitleScreen.render();
 			break;
 		case State::LEVEL:
